@@ -32,98 +32,114 @@ class TozPembeAES(ctk.CTk):
         self.vurgu_pembe = "#DB7093"
         self.buton_pembe = "#FF69B4"
 
-        self.title("Soft Pink File Crypt")
-        self.geometry("550x700")
+        self.title("Soft Pink File Crypt Pro")
+        self.geometry("550x850")
         self.configure(fg_color=self.arka_plan)
         ctk.set_appearance_mode("light")
         
         # Başlık
         ctk.CTkLabel(self, text="🌸 Soft File Crypt 🌸", font=("Segoe UI", 28, "bold"), text_color=self.vurgu_pembe).pack(pady=20)
 
-        # --- Dosya Seçme Bölümü ---
-        self.file_frame = ctk.CTkFrame(self, fg_color="transparent")
-        self.file_frame.pack(pady=10)
+        # --- MEDYA VE DOSYA BÖLÜMÜ (Görsel/Video) ---
+        self.media_frame = ctk.CTkFrame(self, fg_color="white", border_color=self.toz_pembe, border_width=2)
+        self.media_frame.pack(pady=10, padx=20, fill="x")
+        
+        ctk.CTkLabel(self.media_frame, text="Görsel & Video Şifreleme (.pink)", font=("Segoe UI", 14, "bold"), text_color=self.vurgu_pembe).pack(pady=5)
+        
+        self.media_btn_frame = ctk.CTkFrame(self.media_frame, fg_color="transparent")
+        self.media_btn_frame.pack(pady=10)
 
-        self.dosya_oku_btn = ctk.CTkButton(self.file_frame, text="Dosyadan Metin Çek 📄", command=self.dosya_oku, 
-                                           fg_color="white", text_color=self.vurgu_pembe, border_color=self.toz_pembe, border_width=2, hover_color="#fce4ec")
-        self.dosya_oku_btn.grid(row=0, column=0, padx=5)
+        ctk.CTkButton(self.media_btn_frame, text="📁 Medya Şifrele", command=lambda: self.medya_islem("sifrele"), 
+                      fg_color=self.buton_pembe, hover_color=self.vurgu_pembe).grid(row=0, column=0, padx=5)
+        
+        ctk.CTkButton(self.media_btn_frame, text="🔓 Medya Çöz", command=lambda: self.medya_islem("coz"), 
+                      fg_color=self.toz_pembe, hover_color=self.vurgu_pembe).grid(row=0, column=1, padx=5)
 
-        self.dosya_kaydet_btn = ctk.CTkButton(self.file_frame, text="Sonucu Kaydet 💾", command=self.dosya_kaydet, 
-                                              fg_color="white", text_color=self.vurgu_pembe, border_color=self.toz_pembe, border_width=2, hover_color="#fce4ec")
-        self.dosya_kaydet_btn.grid(row=0, column=1, padx=5)
-
-        # Metin Alanları
+        # --- METİN BÖLÜMÜ ---
+        ctk.CTkLabel(self, text="Hızlı Metin İşlemleri", font=("Segoe UI", 13, "bold"), text_color=self.vurgu_pembe).pack(pady=(15,0))
+        
         self.input_text = ctk.CTkTextbox(self, width=450, height=120, border_color=self.toz_pembe, border_width=2, fg_color="white")
         self.input_text.pack(pady=10)
 
-        self.pass_entry = ctk.CTkEntry(self, placeholder_text="Anahtar Şifre", show="*", width=450, border_color=self.toz_pembe, fg_color="white")
-        self.pass_entry.pack(pady=10)
+        # .txt'den Metin Çekme Butonu
+        ctk.CTkButton(self, text="📄 .txt Dosyasından Metin Çek (Kutuya Aktar)", command=self.dosyadan_metin_oku, 
+                      fg_color=self.vurgu_pembe, hover_color=self.buton_pembe, width=450).pack(pady=5)
 
-        # İşlem Butonları
-        self.btn_frame = ctk.CTkFrame(self, fg_color="transparent")
-        self.btn_frame.pack(pady=15)
-
-        ctk.CTkButton(self.btn_frame, text="Şifrele ✨", command=self.sifrele_islem, fg_color=self.buton_pembe, hover_color=self.vurgu_pembe).grid(row=0, column=0, padx=10)
-        ctk.CTkButton(self.btn_frame, text="Çöz 🔓", command=self.coz_islem, fg_color=self.toz_pembe, text_color="white", hover_color=self.vurgu_pembe).grid(row=0, column=1, padx=10)
+        self.pass_entry = ctk.CTkEntry(self, placeholder_text="Ortak Şifre / Key", show="*", width=450, border_color=self.toz_pembe, fg_color="white")
+        self.pass_entry.pack(pady=15)
 
         self.output_text = ctk.CTkTextbox(self, width=450, height=120, border_color=self.toz_pembe, border_width=2, fg_color="white")
         self.output_text.pack(pady=10)
 
-    # --- DOSYA İŞLEMLERİ ---
+        # Metin Butonları
+        self.btn_frame = ctk.CTkFrame(self, fg_color="transparent")
+        self.btn_frame.pack(pady=15)
 
-    def dosya_oku(self):
-        dosya_yolu = filedialog.askopenfilename(filetypes=[("Metin Dosyaları", "*.txt"), ("Tüm Dosyalar", "*.*")])
-        if dosya_yolu:
+        ctk.CTkButton(self.btn_frame, text="Metni Şifrele ✨", command=self.sifrele_islem, fg_color=self.buton_pembe).grid(row=0, column=0, padx=10)
+        ctk.CTkButton(self.btn_frame, text="Metni Çöz 🔓", command=self.coz_islem, fg_color=self.toz_pembe).grid(row=0, column=1, padx=10)
+
+    # --- FONKSİYONLAR ---
+
+    def dosyadan_metin_oku(self):
+        """Sadece .txt içeriğini okur ve kutuya yapıştırır."""
+        yol = filedialog.askopenfilename(filetypes=[("Metin Dosyaları", "*.txt")])
+        if yol:
             try:
-                with open(dosya_yolu, "r", encoding="utf-8") as f:
-                    icerik = f.read()
+                with open(yol, "r", encoding="utf-8") as f:
                     self.input_text.delete("0.0", "end")
-                    self.input_text.insert("0.0", icerik)
+                    self.input_text.insert("0.0", f.read())
+                messagebox.showinfo("Bilgi", "Metin başarıyla kutuya aktarıldı. 🎀")
             except Exception as e:
-                messagebox.showerror("Hata", f"Dosya okunamadı: {e}")
+                messagebox.showerror("Hata", "Dosya okunamadı.")
 
-    def dosya_kaydet(self):
-        icerik = self.output_text.get("0.0", "end-1c")
-        if not icerik:
-            messagebox.showwarning("Uyarı", "Kaydedilecek bir sonuç yok!")
+    def medya_islem(self, mod):
+        """Görsel ve videoları .pink uzantısı ile şifreler/çözer."""
+        parola = self.pass_entry.get()
+        if not parola:
+            messagebox.showwarning("Uyarı", "Lütfen önce bir şifre girin! 🌸")
             return
-            
-        dosya_yolu = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Metin Dosyaları", "*.txt")])
-        if dosya_yolu:
-            try:
-                with open(dosya_yolu, "w", encoding="utf-8") as f:
-                    f.write(icerik)
-                messagebox.showinfo("Başarılı", "Dosya kaydedildi! 🌸")
-            except Exception as e:
-                messagebox.showerror("Hata", f"Dosya kaydedilemedi: {e}")
 
-    # --- ŞİFRELEME / ÇÖZME İŞLEMLERİ ---
+        yol = filedialog.askopenfilename(title="Dosya Seç")
+        if not yol: return
+
+        try:
+            anahtar = anahtar_uret(parola)
+            with open(yol, "rb") as f:
+                veri = f.read()
+
+            if mod == "sifrele":
+                sonuc = aes_sifrele(veri, anahtar)
+                yeni_yol = yol + ".pink"
+            else:
+                sonuc = aes_coz(veri, anahtar)
+                yeni_yol = yol.replace(".pink", "")
+                if yeni_yol == yol:
+                    yeni_yol = filedialog.asksaveasfilename(title="Farklı Kaydet")
+
+            if yeni_yol:
+                with open(yeni_yol, "wb") as f:
+                    f.write(sonuc)
+                messagebox.showinfo("Başarılı", f"İşlem tamamlandı!\nYeni dosya: {yeni_yol} 🎀")
+        except:
+            messagebox.showerror("Hata", "Şifre yanlış veya dosya bozuk.")
 
     def sifrele_islem(self):
         try:
-            parola = self.pass_entry.get()
-            if not parola:
-                messagebox.showwarning("Uyarı", "Lütfen bir şifre girin! 🌸")
-                return
-            anahtar = anahtar_uret(parola)
-            metin = self.input_text.get("0.0", "end-1c").encode('utf-8')
-            sifreli = aes_sifrele(metin, anahtar)
+            p = self.pass_entry.get()
+            if not p: return
+            res = aes_sifrele(self.input_text.get("0.0", "end-1c").encode(), anahtar_uret(p))
             self.output_text.delete("0.0", "end")
-            self.output_text.insert("0.0", sifreli.hex())
-        except:
-            messagebox.showerror("Hata", "Şifreleme başarısız.")
+            self.output_text.insert("0.0", res.hex())
+        except: messagebox.showerror("Hata", "Başarısız.")
 
     def coz_islem(self):
         try:
-            parola = self.pass_entry.get()
-            hex_veri = self.output_text.get("0.0", "end-1c")
-            if not hex_veri: return
-            anahtar = anahtar_uret(parola)
-            cozulmus = aes_coz(bytes.fromhex(hex_veri), anahtar)
+            p = self.pass_entry.get()
+            hex_v = self.output_text.get("0.0", "end-1c")
+            res = aes_coz(bytes.fromhex(hex_v), anahtar_uret(p))
             self.input_text.delete("0.0", "end")
-            self.input_text.insert("0.0", cozulmus.decode('utf-8'))
-        except:
-            messagebox.showerror("Hata", "Şifre yanlış veya veri bozuk! 🎀")
+            self.input_text.insert("0.0", res.decode())
+        except: messagebox.showerror("Hata", "Şifre Yanlış! 🎀")
 
 if __name__ == "__main__":
     app = TozPembeAES()
