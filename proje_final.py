@@ -197,3 +197,65 @@ def islem_hatali():
     btn_coz.configure(state="normal")
     durum_etiketi.configure(text="SİSTEM HAZIR")
     messagebox.showerror("Hata", "Geçersiz parola veya bozuk dosya!")
+
+def dosya_sec(tur):
+    tipler = [("Tüm Dosyalar", "*.*")]
+    
+    if tur == "foto":
+        tipler = [("Resim Dosyaları", "*.png *.jpg *.jpeg *.gif *.bmp")]
+    elif tur == "belge":
+        tipler = [("Belgeler", "*.pdf *.docx *.txt *.xlsx *.pptx")]
+    elif tur == "video":
+        tipler = [("Videolar", "*.mp4 *.avi *.mkv *.mov")]
+
+    dosya = filedialog.askopenfilename(filetypes=tipler)
+    if dosya:
+        dosya_yolu_var.set(dosya)
+        entry_path.delete(0, 'end')
+        entry_path.insert(0, dosya)
+
+def surukle_birak_al(event):
+    dosya = event.data.strip("{}")
+    dosya_yolu_var.set(dosya)
+    entry_path.delete(0, 'end')
+    entry_path.insert(0, dosya)
+
+def sifre_goster_gizle():
+    if sifre_entry.cget("show") == "●":
+        sifre_entry.configure(show="")
+        btn_goster.configure(text="Gizle")
+    else:
+        sifre_entry.configure(show="●")
+        btn_goster.configure(text="Göster")
+
+def tema_degistir(secilen):
+    renk = temalar[secilen]
+    
+    sidebar.configure(fg_color=renk["sol_panel"])
+    main_frame.configure(fg_color=renk["sag_panel"])
+    
+    baslik_sol.configure(text_color=renk["yazi_koyu"])
+    baslik_sag.configure(text_color=renk["yazi_koyu"])
+    
+    for btn in [btn_foto, btn_belge, btn_video, btn_hepsi, btn_anahtar, btn_temizle]:
+        btn.configure(fg_color=renk["sidebar_btn"], text_color=renk["yazi_koyu"], hover_color=renk["sag_panel"])
+        
+    entry_path.configure(fg_color=renk["entry_bg"], text_color=renk["yazi_koyu"], border_color=renk["border"])
+    sifre_entry.configure(fg_color=renk["entry_bg"], text_color=renk["yazi_koyu"], border_color=renk["border"])
+    
+    # Yeni eklediğim metin kutularının renklerini de güncelliyorum.
+    textbox_giris.configure(fg_color=renk["entry_bg"], text_color=renk["yazi_koyu"], border_color=renk["border"])
+    textbox_cikis.configure(fg_color=renk["entry_bg"], text_color=renk["yazi_koyu"], border_color=renk["border"])
+    
+    for btn in [btn_sifrele, btn_coz, btn_metin_sifrele, btn_metin_coz, btn_kopyala]:
+        btn.configure(fg_color=renk["buton_ana"], hover_color=renk["buton_hover"], text_color="#FFFFFF")
+    
+    sekme_kontrol.configure(segmented_button_selected_color=renk["buton_ana"], segmented_button_selected_hover_color=renk["buton_hover"], text_color=renk["yazi_koyu"])
+    switch_sil.configure(progress_color=renk["buton_ana"], text_color=renk["yazi_koyu"])
+    durum_etiketi.configure(text_color=renk["yazi_acik"])
+    label_sifre.configure(text_color=renk["yazi_koyu"])
+    btn_goster.configure(text_color=renk["yazi_koyu"])
+    
+    ilerleme_cubugu.configure(progress_color=renk["progress"])
+    
+    ayar_kaydet(secilen)
