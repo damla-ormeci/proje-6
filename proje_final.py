@@ -258,4 +258,131 @@ def tema_degistir(secilen):
     
     ilerleme_cubugu.configure(progress_color=renk["progress"])
     
-    ayar_kaydet(secilen)
+    ayar_kaydet(secilen) 
+    root = SifrelemeArayuzu()
+root.title("CIPHER PRO | Aesthetic Edition")
+
+root.geometry("850x650")
+
+ana_font = ("Product Sans", 14)
+baslik_font = ("Product Sans", 24, "bold")
+
+try:
+    pywinstyles.apply_style(root, "acrylic")
+except:
+    pass
+
+dosya_yolu_var = ctk.StringVar()
+
+root.grid_columnconfigure(1, weight=1)
+root.grid_rowconfigure(0, weight=1)
+
+
+sidebar = ctk.CTkFrame(root, width=220, corner_radius=20)
+sidebar.grid(row=0, column=0, padx=15, pady=15, sticky="nsew")
+
+baslik_sol = ctk.CTkLabel(sidebar, text="KORUMA\nMERKEZİ", font=ctk.CTkFont(family=ana_font[0], size=18, weight="bold"))
+baslik_sol.pack(pady=(30, 20))
+
+btn_foto = ctk.CTkButton(sidebar, text="FOTOĞRAF GİZLE", command=lambda: dosya_sec("foto"), corner_radius=15, font=ctk.CTkFont(family=ana_font[0], weight="bold"))
+btn_foto.pack(pady=7, padx=20, fill="x")
+
+btn_belge = ctk.CTkButton(sidebar, text="BELGE GİZLE", command=lambda: dosya_sec("belge"), corner_radius=15, font=ctk.CTkFont(family=ana_font[0], weight="bold"))
+btn_belge.pack(pady=7, padx=20, fill="x")
+
+btn_video = ctk.CTkButton(sidebar, text="VİDEO GİZLE", command=lambda: dosya_sec("video"), corner_radius=15, font=ctk.CTkFont(family=ana_font[0], weight="bold"))
+btn_video.pack(pady=7, padx=20, fill="x")
+
+btn_hepsi = ctk.CTkButton(sidebar, text="TÜM DOSYALAR", command=lambda: dosya_sec("hepsi"), corner_radius=15, font=ctk.CTkFont(family=ana_font[0], weight="bold"))
+btn_hepsi.pack(pady=7, padx=20, fill="x")
+
+ctk.CTkFrame(sidebar, height=2, fg_color="#FFFFFF").pack(fill="x", padx=25, pady=15)
+
+tema_secici = ctk.CTkOptionMenu(sidebar, values=["Pembe", "Buz Mavisi", "Açık Mor"], command=tema_degistir, corner_radius=10, font=ctk.CTkFont(family=ana_font[0]))
+tema_secici.pack(pady=7, padx=20, fill="x")
+
+btn_anahtar = ctk.CTkButton(sidebar, text="ANAHTAR ÜRET", command=anahtar_olustur, corner_radius=15, font=ctk.CTkFont(family=ana_font[0], weight="bold"))
+btn_anahtar.pack(pady=7, padx=20, fill="x")
+
+btn_temizle = ctk.CTkButton(sidebar, text="TEMİZLE", command=lambda: [dosya_yolu_var.set(""), entry_path.delete(0, 'end'), sifre_entry.delete(0, 'end'), textbox_giris.delete("1.0", "end"), textbox_cikis.delete("1.0", "end")], corner_radius=15, font=ctk.CTkFont(family=ana_font[0], weight="bold"))
+btn_temizle.pack(pady=7, padx=20, fill="x")
+
+
+main_frame = ctk.CTkFrame(root, corner_radius=20)
+main_frame.grid(row=0, column=1, padx=(0, 15), pady=15, sticky="nsew")
+
+baslik_sag = ctk.CTkLabel(main_frame, text="VERİ ŞİFRELEME PANELİ", font=ctk.CTkFont(family=baslik_font[0], size=24, weight="bold"))
+baslik_sag.pack(pady=(20, 10))
+
+label_sifre = ctk.CTkLabel(main_frame, text="GİZLİ ŞİFRE", font=ctk.CTkFont(family=ana_font[0], size=14, weight="bold"))
+label_sifre.pack(pady=(5, 5))
+
+sifre_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
+sifre_frame.pack(pady=5)
+
+sifre_entry = ctk.CTkEntry(sifre_frame, width=300, height=45, corner_radius=20, show="●", justify="center", border_width=2, font=ctk.CTkFont(size=20))
+sifre_entry.pack(side="left", padx=(30, 0))
+
+btn_goster = ctk.CTkButton(sifre_frame, text="Göster", command=sifre_goster_gizle, width=30, height=30, fg_color="transparent", hover_color="#E2E8F0", font=ctk.CTkFont(family=ana_font[0], size=12, underline=True))
+btn_goster.pack(side="left", padx=10)
+
+
+sekme_kontrol = ctk.CTkTabview(main_frame, width=500, height=280, corner_radius=15)
+sekme_kontrol.pack(pady=10, padx=20, fill="both", expand=True)
+
+sekme_dosya = sekme_kontrol.add("Dosya Gizle")
+sekme_metin = sekme_kontrol.add("Metin Gizle")
+
+
+entry_path = ctk.CTkEntry(sekme_dosya, width=400, height=40, corner_radius=15, border_width=2, font=ctk.CTkFont(family=ana_font[0], size=12), placeholder_text="Dosya yolu veya dosyayı buraya sürükleyin...")
+entry_path.pack(pady=10)
+entry_path.drop_target_register(DND_FILES)
+entry_path.dnd_bind('<<Drop>>', surukle_birak_al)
+
+switch_sil = ctk.CTkSwitch(sekme_dosya, text="İşlemden Sonra Orijinal Dosyayı Sil", font=ctk.CTkFont(family=ana_font[0], size=12))
+switch_sil.pack(pady=5)
+
+ilerleme_frame = ctk.CTkFrame(sekme_dosya, fg_color="transparent", width=300, height=15)
+ilerleme_frame.pack_propagate(False)
+ilerleme_frame.pack(pady=(5, 5))
+
+ilerleme_cubugu = ctk.CTkProgressBar(ilerleme_frame, mode="indeterminate", width=300, height=8, corner_radius=5)
+
+btn_frame_dosya = ctk.CTkFrame(sekme_dosya, fg_color="transparent")
+btn_frame_dosya.pack(pady=5)
+
+btn_sifrele = ctk.CTkButton(btn_frame_dosya, text="ŞİFRELE", command=lambda: islem_yap("sifrele"), width=130, height=40, corner_radius=20, font=ctk.CTkFont(family=ana_font[0], weight="bold", size=14))
+btn_sifrele.grid(row=0, column=0, padx=10)
+
+btn_coz = ctk.CTkButton(btn_frame_dosya, text="ÇÖZ", command=lambda: islem_yap("coz"), width=130, height=40, corner_radius=20, font=ctk.CTkFont(family=ana_font[0], weight="bold", size=14))
+btn_coz.grid(row=0, column=1, padx=10)
+
+
+ctk.CTkLabel(sekme_metin, text="Giriş Metni:", font=ctk.CTkFont(family=ana_font[0], size=12, weight="bold")).pack(anchor="w", padx=30)
+textbox_giris = ctk.CTkTextbox(sekme_metin, height=60, border_width=2, corner_radius=10, font=ctk.CTkFont(family=ana_font[0], size=13))
+textbox_giris.pack(pady=2, padx=30, fill="x")
+
+btn_frame_metin = ctk.CTkFrame(sekme_metin, fg_color="transparent")
+btn_frame_metin.pack(pady=5)
+
+btn_metin_sifrele = ctk.CTkButton(btn_frame_metin, text="METNİ ŞİFRELE", command=lambda: metin_islemi_yap("sifrele"), width=120, height=35, corner_radius=15, font=ctk.CTkFont(family=ana_font[0], weight="bold", size=12))
+btn_metin_sifrele.grid(row=0, column=0, padx=10)
+
+btn_metin_coz = ctk.CTkButton(btn_frame_metin, text="METNİ ÇÖZ", command=lambda: metin_islemi_yap("coz"), width=120, height=35, corner_radius=15, font=ctk.CTkFont(family=ana_font[0], weight="bold", size=12))
+btn_metin_coz.grid(row=0, column=1, padx=10)
+
+ctk.CTkLabel(sekme_metin, text="Şifrelenmiş Sonuç:", font=ctk.CTkFont(family=ana_font[0], size=12, weight="bold")).pack(anchor="w", padx=30)
+textbox_cikis = ctk.CTkTextbox(sekme_metin, height=60, border_width=2, corner_radius=10, font=ctk.CTkFont(family=ana_font[0], size=13))
+textbox_cikis.pack(pady=2, padx=30, fill="x")
+
+btn_kopyala = ctk.CTkButton(sekme_metin, text="Sonucu Kopyala", command=metni_kopyala, height=25, corner_radius=10, font=ctk.CTkFont(family=ana_font[0], weight="bold", size=11))
+btn_kopyala.pack(pady=5)
+
+durum_etiketi = ctk.CTkLabel(main_frame, text="SİSTEM HAZIR", font=ctk.CTkFont(family=ana_font[0], size=12, slant="italic"))
+durum_etiketi.pack(side="bottom", pady=10)
+
+kayitli_tema = ayar_yukle()
+tema_secici.set(kayitli_tema)
+tema_degistir(kayitli_tema)
+
+root.mainloop()
