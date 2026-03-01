@@ -132,7 +132,6 @@ def islem_yap(mod):
 
     threading.Thread(target=arka_plan_islem).start()
 
-
 def metin_islemi_yap(mod):
     parola = sifre_entry.get()
     metin = textbox_giris.get("1.0", "end-1c").strip()
@@ -148,7 +147,6 @@ def metin_islemi_yap(mod):
             f = Fernet(anahtar)
             
             sifreli_byte = f.encrypt(metin.encode('utf-8'))
-            
             tam_veri = base64.urlsafe_b64encode(salt + sifreli_byte).decode('utf-8')
             
             textbox_cikis.delete("1.0", "end")
@@ -156,7 +154,6 @@ def metin_islemi_yap(mod):
             durum_etiketi.configure(text="Sistem Hazır - Metin Şifrelendi")
             
         elif mod == "coz":
-            
             tam_veri_byte = base64.urlsafe_b64decode(metin.encode('utf-8'))
             salt, sifreli_byte = tam_veri_byte[:16], tam_veri_byte[16:]
             
@@ -173,7 +170,6 @@ def metin_islemi_yap(mod):
         messagebox.showerror("Hata", "Geçersiz parola veya hatalı şifrelenmiş metin!")
 
 def metni_kopyala():
-    
     alinacak_metin = textbox_cikis.get("1.0", "end-1c")
     if alinacak_metin:
         root.clipboard_clear()
@@ -243,7 +239,6 @@ def tema_degistir(secilen):
     entry_path.configure(fg_color=renk["entry_bg"], text_color=renk["yazi_koyu"], border_color=renk["border"])
     sifre_entry.configure(fg_color=renk["entry_bg"], text_color=renk["yazi_koyu"], border_color=renk["border"])
     
-    # Yeni eklediğim metin kutularının renklerini de güncelliyorum.
     textbox_giris.configure(fg_color=renk["entry_bg"], text_color=renk["yazi_koyu"], border_color=renk["border"])
     textbox_cikis.configure(fg_color=renk["entry_bg"], text_color=renk["yazi_koyu"], border_color=renk["border"])
     
@@ -258,10 +253,10 @@ def tema_degistir(secilen):
     
     ilerleme_cubugu.configure(progress_color=renk["progress"])
     
-    ayar_kaydet(secilen) 
-    root = SifrelemeArayuzu()
-root.title("CIPHER PRO | Aesthetic Edition")
+    ayar_kaydet(secilen)
 
+root = SifrelemeArayuzu()
+root.title("CIPHER PRO | Aesthetic Edition")
 root.geometry("850x650")
 
 ana_font = ("Product Sans", 14)
@@ -276,7 +271,6 @@ dosya_yolu_var = ctk.StringVar()
 
 root.grid_columnconfigure(1, weight=1)
 root.grid_rowconfigure(0, weight=1)
-
 
 sidebar = ctk.CTkFrame(root, width=220, corner_radius=20)
 sidebar.grid(row=0, column=0, padx=15, pady=15, sticky="nsew")
@@ -307,7 +301,6 @@ btn_anahtar.pack(pady=7, padx=20, fill="x")
 btn_temizle = ctk.CTkButton(sidebar, text="TEMİZLE", command=lambda: [dosya_yolu_var.set(""), entry_path.delete(0, 'end'), sifre_entry.delete(0, 'end'), textbox_giris.delete("1.0", "end"), textbox_cikis.delete("1.0", "end")], corner_radius=15, font=ctk.CTkFont(family=ana_font[0], weight="bold"))
 btn_temizle.pack(pady=7, padx=20, fill="x")
 
-
 main_frame = ctk.CTkFrame(root, corner_radius=20)
 main_frame.grid(row=0, column=1, padx=(0, 15), pady=15, sticky="nsew")
 
@@ -326,13 +319,11 @@ sifre_entry.pack(side="left", padx=(30, 0))
 btn_goster = ctk.CTkButton(sifre_frame, text="Göster", command=sifre_goster_gizle, width=30, height=30, fg_color="transparent", hover_color="#E2E8F0", font=ctk.CTkFont(family=ana_font[0], size=12, underline=True))
 btn_goster.pack(side="left", padx=10)
 
-
 sekme_kontrol = ctk.CTkTabview(main_frame, width=500, height=280, corner_radius=15)
 sekme_kontrol.pack(pady=10, padx=20, fill="both", expand=True)
 
 sekme_dosya = sekme_kontrol.add("Dosya Gizle")
 sekme_metin = sekme_kontrol.add("Metin Gizle")
-
 
 entry_path = ctk.CTkEntry(sekme_dosya, width=400, height=40, corner_radius=15, border_width=2, font=ctk.CTkFont(family=ana_font[0], size=12), placeholder_text="Dosya yolu veya dosyayı buraya sürükleyin...")
 entry_path.pack(pady=10)
@@ -356,7 +347,6 @@ btn_sifrele.grid(row=0, column=0, padx=10)
 
 btn_coz = ctk.CTkButton(btn_frame_dosya, text="ÇÖZ", command=lambda: islem_yap("coz"), width=130, height=40, corner_radius=20, font=ctk.CTkFont(family=ana_font[0], weight="bold", size=14))
 btn_coz.grid(row=0, column=1, padx=10)
-
 
 ctk.CTkLabel(sekme_metin, text="Giriş Metni:", font=ctk.CTkFont(family=ana_font[0], size=12, weight="bold")).pack(anchor="w", padx=30)
 textbox_giris = ctk.CTkTextbox(sekme_metin, height=60, border_width=2, corner_radius=10, font=ctk.CTkFont(family=ana_font[0], size=13))
